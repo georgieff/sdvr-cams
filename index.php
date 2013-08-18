@@ -2,15 +2,14 @@
 
 include_once('worker.php');
 
-$worker = new SDVRWorker();
-if($worker->try_fetch_feed()) {
-  $decoded_response = $worker->get_cameras_results();
-} else {
-  $decoded_response = null;
-}
-
 echo "<meta charset='utf-8'>";
 echo "<pre>";
+$worker = new SDVRWorker();
+if($worker->try_fetch_feed()) {
+  $prepared_data = $worker->prepare_data_for_insert();
+} else {
+  $prepared_data = null;
+}
 
-var_dump($decoded_response);
+var_dump($prepared_data);
 
