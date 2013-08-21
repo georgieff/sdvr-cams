@@ -23,7 +23,7 @@ $config['auto_connect'] = true;
  *          $config['db_prefix'] = 'UD_'; <<<
  */
 $config['db_server'] = 'localhost';
-$config['db_name'] = 'test';
+$config['db_name'] = 'georgief_sdvr';
 $config['db_user'] = 'root';
 $config['db_password'] = '';
 $config['db_charset'] = 'UTF8';

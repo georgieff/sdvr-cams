@@ -1,7 +1,7 @@
 <?php
 
-include_once('worker.php');
-include_once('katie-files/DbLib.php');
+include_once('fetch_worker.php');
+include_once('db_worker.php');
 
 echo "<meta charset='utf-8'>";
 echo "<pre>";
@@ -11,7 +11,6 @@ if($worker->try_fetch_feed()) {
 } else {
   $prepared_data = null;
 }
-$db = new DbLib();
 
-//var_dump($prepared_data);
-
+$db_worker = new DBWorker();
+$db_worker->import_new_data($prepared_data);
