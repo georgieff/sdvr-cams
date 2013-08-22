@@ -6,35 +6,40 @@ class DBWorker {
 
   //WE NEED A HUGE REFACTORING
 
-  public function import_new_data($fetched_data) {
+  private $db;
+  private $table_name;
 
-    $db = new DbLib();
-    $db->setTable('days');
+  public function __construct() {
+    $this->db = new DbLib();
+  }
+
+  public function import_new_data($fetched_data) {
+    $this->table_name = 'cams_per_day';
 
     foreach ($fetched_data as $days) {
       foreach ($days as $day_date => $day) {
 
         // check if it's a valid date
-        $db->where('unix_date', $day_date);
-        $res = $db->get('days');
+        $this->db->where('unix_date', $day_date);
+        $res = $this->db->get('days');
 
-        if ($db->affectedRows() === 1) {
+        if ($this->db->affectedRows() === 1) {
           $day_record = $res->fetchAllObject();
           $day_id = $day_record[0]->day_id;
 
           foreach ($day as $camera) {
           //check if there is already record in the table
             $camera_name = trim($camera['name']);
-            $db->where('day_id', $day_id);
-            $db->where('comment', $camera_name); //comment shoud be changed with cam_id
-            $camera_res = $db->get('cams_per_day');
+            $this->db->where('day_id', $day_id);
+            $this->db->where('comment', $camera_name); //comment shoud be changed with cam_id
+            $camera_res = $this->db->get($this->table_name);
 
-            if($db->affectedRows() === 0) {
+            if($this->db->affectedRows() === 0) {
               $insert_data['day_id'] = $day_id;
               $insert_data['cam_id'] = 1; // shoud be changes
               $insert_data['comment'] = $camera_name;
 
-              $db->insert('cams_per_day', $insert_data);
+              $this->db->insert('cams_per_day', $insert_data);
               //need log class
             } else {
               //need log class
@@ -46,13 +51,14 @@ class DBWorker {
   }
 
   public function create_days() {
+    $this->table_name = 'days';
 
     for ($j=1; $j < 13; $j++) {
       for ($i=1; $i < 32; $i++) {
         $insertData['unix_date'] = mktime(0, 0, 0, $j, $i, 2013);
-        $db->insert('', $insertData, false);
+        $this->db->insert($this->table_name, $insertData);
       }
     }
-    echo $db->getError();
+    echo $this->db->getError();
   }
 }
